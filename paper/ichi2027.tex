@@ -50,10 +50,25 @@
 \title{Reliability-Targeted Bedtime Planning\\with Explicit Infeasibility}
 
 %% ---------------------------------------------------------------
-%% DOUBLE-BLIND. Restore the real author block only for camera-ready.
+%% AUTHORS. ICHI 2027 Early Bird is DOUBLE-BLIND, so the submitted PDF must
+%% carry the anonymous block. Leave \anontrue for the 21 Sep submission.
+%%
+%% Flip to \anonfalse ONLY for:  camera-ready (if accepted), and the arXiv
+%% preprint posted AFTER submitting.
 %% ---------------------------------------------------------------
-\author{\IEEEauthorblockN{Anonymous Authors}
-\IEEEauthorblockA{Affiliation withheld for double-blind review}}
+\newif\ifanon
+\anontrue                        % <<< \anonfalse for camera-ready / arXiv
+
+\ifanon
+  \author{\IEEEauthorblockN{Anonymous Authors}
+  \IEEEauthorblockA{Affiliation withheld for double-blind review}}
+\else
+  \author{\IEEEauthorblockN{Ayushi Shukla and Anshuman Ravi}
+  \IEEEauthorblockA{Dept.\ of Computer Science and Engineering\\
+  National Institute of Technology Patna\\
+  Patna, Bihar, India\\
+  \texttt{\{ayushis.ug23.cs, anshumanr.ug23.cs\}@nitp.ac.in}}}
+\fi
 
 \maketitle
 
@@ -485,9 +500,20 @@ nights.
 
 Retrained on real cohorts with identical model, features and protocol
 (Table~\ref{tab:synthgap}, Fig.~\ref{fig:synthgap}), $R^2$ falls by roughly a
-factor of four. Across splits it ranges $-0.077$ to $+0.395$, so no single-split
-figure is reportable; the interval nonetheless excludes zero, so the model does
-beat the mean on LifeSnaps.
+factor of four. Across splits it ranges $-0.077$ to $+0.395$
+(Fig.~\ref{fig:splits}), so no single-split figure is reportable; the interval
+nonetheless excludes zero, so the model does beat the mean on LifeSnaps. We show
+the spread rather than a mean alone because a paper reporting one split from
+this distribution could honestly claim anything from failure to a strong result.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig6_across_splits.pdf}
+\caption{Metric spread across eight participant-level splits. The width is the
+point: with 63 participants, which people land in the test fold moves $R^2$ by
+more than the effect being measured.}
+\label{fig:splits}
+\end{figure}
 
 \begin{table}[t]
 \caption{Sleep-duration regression across cohorts}
@@ -539,9 +565,9 @@ reaches significance in either model.}
 \subsection{The stated reliability is calibrated}
 
 Over 3{,}180 held-out person-nights from 46 participants
-(Table~\ref{tab:calib}), \textbf{ECE is 0.0148 (95\% CI 0.0139--0.0571)}. The
-interval is wide and right-skewed; the point estimate alone overstates the
-precision.
+(Table~\ref{tab:calib}, Fig.~\ref{fig:calib}), \textbf{ECE is 0.0148 (95\% CI
+0.0139--0.0571)}. The interval is wide and right-skewed; the point estimate
+alone overstates the precision.
 
 \begin{table}[t]
 \caption{Reliability diagram, binned}
@@ -559,6 +585,16 @@ Predicted & $n$ & Observed \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig3_calibration.pdf}
+\caption{Reliability diagram. Points sit close to the diagonal across the
+occupied range, which is what makes a refusal threshold meaningful; the bins are
+narrow because the model is weakly informative, not because it is uncertain
+about where it stands.}
+\label{fig:calib}
+\end{figure}
 
 Calibration alone is insufficient, and we report Brier alongside for that
 reason: a predictor that always returns the base rate achieves a \emph{perfect}
