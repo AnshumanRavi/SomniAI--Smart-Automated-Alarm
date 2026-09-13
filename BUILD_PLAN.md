@@ -79,9 +79,11 @@ The critical path.
 > **Dataset pivot (2026-09-10).** MESA never arrived — no reply, no access. It
 > is no longer required. MMASH was investigated and rejected: one night per
 > person made the habit features underivable and left ~22 usable rows.
-> **LifeSnaps** (71 participants, 4,141 sleep nights) and **PMData** (16
-> participants, 2,064 nights) are both downloaded, verified, and need no access
-> request. See [`docs/feature-mapping-lifesnaps-pmdata.md`](docs/feature-mapping-lifesnaps-pmdata.md).
+> **LifeSnaps** and **PMData** are both downloaded, verified, and need no access
+> request. Measured counts after building the loaders: 69 participants and
+> 3,551 person-nights (LifeSnaps), 16 and 1,881 (PMData) — the raw record counts
+> quoted when the datasets were chosen were higher, before multi-episode nights
+> were folded. See [`docs/feature-mapping-lifesnaps-pmdata.md`](docs/feature-mapping-lifesnaps-pmdata.md).
 
 - [x] **4. Request the long-lead dataset** — *drafted in
   [`docs/nsrr-mesa-request.md`](docs/nsrr-mesa-request.md); no reply received.
@@ -259,74 +261,125 @@ the point; **calibration and refusal quality are.**
   introduces a broken promise**. Recommended, left unchanged pending your
   decision since it alters production behaviour.
 
-- [ ] **11b. Matched-subset analysis and ablations**  ← **you are here**
+- [x] **11b. Matched-subset analysis and ablations** — *done. Write-up in
+  [`docs/ablation-matched-results.md`](docs/ablation-matched-results.md).*
 
-  > Added after step 10 established that the inversion cannot be validated
-  > observationally. This is the highest-value remaining step: without it the
-  > paper proposes an inverse planner and never evaluates the inversion, which
-  > is the strongest available reason for a reviewer to reject it.
+  `ai-brain/evaluation/ablation.py` + `matched.py`, 16 tests.
 
-  ```
-  Validate the inverse planning algorithm against known ground truth in simulation, where the counterfactual is observable: does the bedtime sweep find the true latest feasible bedtime, does coordinate ascent find a minimal sufficient lever set, and are infeasibility verdicts correct when the ground-truth model says the target is unreachable?
-  ```
+  **Ablations — every component has a distinct job:**
 
-  **Verify:** Use ground-truth models where the right answer is computable by
-  exhaustive search, so "the planner found the optimum" is checked rather than
-  asserted. Include adversarial cases — non-monotone response curves, redundant
-  levers, targets just above and just below the achievable ceiling. The paper
-  must then say plainly which claim rests on which evidence: **algorithm
-  validated in simulation, model validated on real data, end-to-end effect not
-  validated** and requiring a deployment study.
+  | Ablation | Verdict correct | False refusals | Broken promises | Bedtime optimal |
+  | --- | --- | --- | --- | --- |
+  | full planner | 0.929 | 3 | **0** | 1.00 |
+  | no bedtime sweep | 0.881 | 5 | 0 | **0.69** |
+  | no coordinate ascent | **0.762** | **10** | 0 | 1.00 |
+  | no controllable/habit partition | 0.857 | 3 | **3** | 1.00 |
+  | no attribution | 0.929 | 3 | 0 | 1.00 |
 
-- [ ] **11b. Matched-subset analysis and ablations**
+  The sweep buys optimality (minimality 0.95 → 0.56 without it), ascent buys
+  completeness, and **the partition is the only component whose removal breaks
+  soundness** — the mechanism the invention disclosure called distinctive turns
+  out to be the one keeping the planner honest. Attribution changes no verdict,
+  only whether the user is told why (2 habit causes named vs 0).
 
-  ```
-  Run the matched-subset analysis — nights where a participant happened to sleep near the planner's recommended hour, compared against their other nights — then ablate the refusal machinery: the bedtime sweep, coordinate ascent, the controllable/habit/fixed partition, and the counterfactual attribution.
-  ```
+  **Matched subset — inconclusive, and that is the finding.** Direction positive
+  at all four tolerances (d 0.17–0.40) but every CI crosses zero, with only 9–11
+  participants contributing a paired difference. Underpowered by construction,
+  and not randomised.
 
-  **Verify:** The whole table regenerates from one command. Report the matched
-  subset's size and statistical power honestly; if it is too small to conclude
-  anything, say so rather than reporting a noisy effect as a result. Only 3 of 7
-  controllable levers exist in this data, so the coordinate-ascent ablation is
-  necessarily partial — report it as evaluated over the available subset rather
-  than quietly redefining `CONTROLLABLE`.
+  Its real value is sizing the next study: detecting an effect this size needs
+  **~50–75 participants**. `PRODUCT_PLAN.md` Phase F currently proposes 15–30,
+  which would be underpowered — update it before running anything.
 
-- [ ] **12. Statistics**
+- [x] **12. Statistics** — *done. Write-up in
+  [`docs/statistics-results.md`](docs/statistics-results.md).*
 
-  ```
-  Set up the statistical analysis: mixed-effects models over repeated nights per person, with effect sizes and confidence intervals, plus calibration error with uncertainty.
-  ```
+  `ai-brain/evaluation/statistics.py`, 17 tests. All uncertainty comes from
+  resampling **participants**, never rows — a participant contributes ~50
+  correlated nights.
 
-  **Verify:** The analysis script runs end to end and emits the results tables.
-  No bare point estimates anywhere — every claim carries an interval. Given the
-  split-to-split variance already seen (R² −0.08 to +0.40), single-split numbers
-  must not appear as results.
+  **The signal survives proper intervals.** R² [0.075, 0.297] excludes zero and
+  AUC [0.610, 0.710] excludes chance, so "weak but real" is now supported rather
+  than asserted from point estimates that swung −0.077 to +0.395 across splits.
+
+  **Calibration is less precise than it looked.** ECE 0.0148 carries a
+  bootstrap interval reaching **0.057** — still good, but the point estimate
+  alone overstated it.
+
+  **The two outcomes have different structure.** Unconditional ICC is 0.336 for
+  sleep duration (a third is a stable person-level trait, formalising step 8's
+  oracle result) but only 0.060 for wake regularity. Wake regularity is almost
+  entirely night-to-night, which arguably makes it the better target for a
+  system that intervenes on nights.
+
+  Two predictors survive in both models by different estimators: later bedtime
+  (−0.295 SD of sleep; OR 0.68 for regularity) and resting heart rate. **No
+  habit feature reaches significance in either.**
+
+  *Trap recorded:* the first fit reported ICC 0.000 with intervals spanning ±6.5
+  million. `lbfgs` reported convergence while sitting on the boundary; `powell`
+  and an independent ANOVA both find the variance is real. Models now run under
+  `powell` with a `boundary_solution` flag and a test pinning the choice.
 
 ---
 
 ## Phase 4 — Write it
 
-- [ ] **13. Figures**
+- [x] **13. Figures** — *done. Notes in [`docs/figures.md`](docs/figures.md).*
 
-  ```
-  Generate the paper figures: system architecture, the bedtime inverse search, and the results and ablation plots.
-  ```
+  `ai-brain/evaluation/figures.py`, 13 tests. Six figures, PNG and PDF, drawn
+  from the same functions that produce the numbers in `docs/` so a figure and
+  its table cannot drift apart.
 
-  **Verify:** Every figure regenerates from committed code and data. Readable in
-  greyscale at print size.
+  | # | Figure | Carries |
+  | --- | --- | --- |
+  | 1 | Inverse search, two panels | The mechanism *and* the refusal |
+  | 2 | Synthetic vs real | The ~4× overstatement in R² |
+  | 3 | Calibration | Reliability diagram with ECE interval |
+  | 4 | Refusal quality | Over-promise rate by planner and target |
+  | 5 | Ablation | Each component, split by failure mode |
+  | 6 | Across splits | Why one split is not a result |
 
-- [ ] **14. The manuscript**
+  **Figure 1 has two panels deliberately** — under infeasibility-first the
+  refusal is the contribution, so it gets equal space. **Figure 5 separates
+  false refusals from broken promises** rather than plotting one accuracy
+  number: the two failures are not equivalent, and separating them is what makes
+  the habit partition's unique role visible at a glance.
 
-  ```
-  Draft the Methods, Results and Limitations sections, with the algorithm described precisely enough for someone to reimplement it.
-  ```
+  **Greyscale is enforced, not hoped for.** Nothing is distinguished by hue;
+  every series carries a grey level, a line style or hatch, and a marker.
+  `check_greyscale_separation` asserts a minimum luminance gap of 0.12 — the
+  palette scores 0.18 — and a test proves the check has teeth by rejecting two
+  blues that look distinct on screen and identical in print.
 
-  **Verify:** Hand the Methods section to someone who hasn't seen the code and
-  ask whether they could rebuild the planner from it. Limitations names the
-  synthetic-to-real gap, the proxy labels, and the absence of a deployment study
-  before a reviewer does.
+  `figures/` is gitignored: regenerable artifacts, and binaries in review diffs
+  are noise. `matplotlib` went into `requirements-research.txt`, not the service
+  requirements.
 
-- [ ] **15. Reproducibility package**
+- [x] **14. The manuscript** — *Methods, Results and Limitations drafted in
+  [`paper/draft.md`](paper/draft.md) (~3,300 words).*
+
+  Markdown for now; converts to IEEEtran at submission. Every number traces to a
+  table in `docs/` and regenerates from `evaluation/run_study.py`.
+
+  **The verify step caught real gaps.** Auditing the draft against the code's
+  actual constants showed the Methods section named the seven controllable
+  levers but not their directions, ranges or step sizes — so nobody could have
+  reimplemented Algorithm 2 from it. Also missing: the 20.5 °C set-point, the
+  habit reference values, the three distinct gain thresholds, and the chronotype
+  cut points. §3.4 now tabulates all of them.
+
+  It also surfaced a genuine ambiguity: there are **two different trailing
+  windows** — 28 nights for the wake-proxy baseline, 7 for the habit features —
+  which the first draft silently conflated. Now stated as a contrast.
+
+  Limitations names all nine, including the three the verify step demands: the
+  constructed proxy and its null construct validity, the absence of a deployment
+  study, and the synthetic-to-real gap — the last framed not only as a finding
+  but as a limitation of *this* work, since the planner's thresholds were tuned
+  against a simulation now known to be optimistic.
+
+- [ ] **15. Reproducibility package**  ← **you are here**
 
   ```
   Assemble the reproducibility package: pinned environment, fixed seeds, dataset access instructions, and a single command that regenerates every number in the paper.

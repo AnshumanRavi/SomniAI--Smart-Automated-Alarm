@@ -1,5 +1,8 @@
-"""Evaluation of the planner: calibration, refusal quality, simulation validation."""
+"""Evaluation of the planner: calibration, refusal, simulation, ablation."""
 
-from . import planner_eval, scenarios, simulation
+from . import (ablation, figures, matched, planner_eval, scenarios, simulation,
+               statistics)
 
-__all__ = ["planner_eval", "scenarios", "simulation"]
+__all__ = ["ablation", "figures", "matched", "planner_eval", "scenarios",
+           "simulation",
+           "statistics"]
