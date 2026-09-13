@@ -467,6 +467,49 @@ each defensible and each reported with a sensitivity analysis:
 \textbf{We call this wake-time regularity, not wake success.}
 Section~\ref{sec:limitations} explains why.
 
+\textbf{Sensitivity.} Table~\ref{tab:sens} sweeps all three choices on PMData
+(1{,}785 labelled nights). Across the full grid the positive rate runs from
+0.198 to 0.858, and we state that number first because it is the one a reviewer
+running our code would find. It decomposes into one robust choice, one nearly
+free choice, and one that matters.
+
+Tolerance is robust: halving it to 15 minutes flips 7.7\% of labels and doubling
+it to 60 flips 11.4\%, while the positive rate moves only because a wider window
+mechanically admits more nights. Day-type bucketing moves the rate least of the
+three (spread 0.040) yet flips 16\% of nights against a pooled baseline --- both
+facts matter, and reporting only the rate would have hidden the second;
+weekend and day-of-week buckets are near-interchangeable (agreement 0.915).
+
+\textbf{One-sidedness is the consequential choice}: a quarter of nights flip
+(agreement 0.741) and the positive rate falls to 0.406. We defend it
+conceptually above --- oversleeping means waking \emph{late} --- but that is a
+conceptual argument, and this is how much rides on it. This sweep covers PMData
+only; the LifeSnaps archive was unavailable at the time of writing, so the
+larger cohort is not represented here.
+
+\begin{table}[t]
+\caption{Target sensitivity on PMData. Agreement is night-by-night against the
+paper's setting.}
+\label{tab:sens}
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+Variant & Positive rate & Agreement \\
+\midrule
+15\,min & 0.588 & 0.923 \\
+\textbf{30\,min (used)} & \textbf{0.666} & --- \\
+45\,min & 0.726 & --- \\
+60\,min & 0.780 & 0.886 \\
+90\,min & 0.858 & --- \\
+\midrule
+Pooled baseline (no day-type) & 0.625 & 0.839 \\
+Day-of-week buckets & 0.651 & 0.915 \\
+Symmetric (two-sided) & 0.406 & 0.741 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Models and protocol}
 
 Random forests (200 trees, depth 12, minimum leaf 8, seed 42) for both the

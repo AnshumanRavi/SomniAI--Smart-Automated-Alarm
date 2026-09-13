@@ -362,6 +362,39 @@ Three choices, each defensible and each reported with a sensitivity analysis:
 
 **We call this wake-time regularity, not wake success.** Section 5 explains why.
 
+**Sensitivity.** All three choices swept on PMData (1,785 labelled nights).
+Across the full grid the positive rate runs from **0.198 to 0.858**, and we state
+that first because it is the number a reviewer running our code would find. It
+decomposes into one robust choice, one nearly free choice, and one that matters.
+
+| Variant | Positive rate | Agreement |
+| --- | --- | --- |
+| 15 min | 0.588 | 0.923 |
+| **30 min — used** | **0.666** | — |
+| 45 min | 0.726 | — |
+| 60 min | 0.780 | 0.886 |
+| 90 min | 0.858 | — |
+| Pooled baseline (no day-type) | 0.625 | 0.839 |
+| Day-of-week buckets | 0.651 | 0.915 |
+| Symmetric (two-sided) | 0.406 | 0.741 |
+
+Agreement is night-by-night against the setting used. **Tolerance is robust**:
+halving it flips 7.7% of labels, doubling it flips 11.4%, and the positive rate
+moves only because a wider window mechanically admits more nights. **Day-type
+bucketing moves the rate least** (spread 0.040) **yet flips 16% of nights**
+against a pooled baseline — reporting only the rate would have hidden that, and
+it confirms that pooling contaminates thin weekend buckets rather than
+simplifying harmlessly. Weekend and day-of-week buckets are near-interchangeable
+(0.915).
+
+**One-sidedness is the consequential choice**: a quarter of nights flip
+(agreement 0.741) and the positive rate falls to 0.406. We defend it
+conceptually — oversleeping means waking *late* — but that is a conceptual
+argument, and this is how much rides on it.
+
+This sweep covers PMData only; the LifeSnaps archive was unavailable at the time
+of writing. Full detail in `docs/target-sensitivity-results.md`.
+
 ### 3.8 Models and protocol
 
 Random forests (200 trees, depth 12, minimum leaf 8, seed 42) for both the
