@@ -28,6 +28,18 @@
 
 \graphicspath{{figures/}}
 
+%% Double-blind: pdfTeX otherwise writes the system username into /Author and
+%% the tool chain into /Creator. Guarded so lualatex/xelatex do not choke.
+\ifdefined\pdfinfo
+  \pdfinfo{%
+    /Author ()%
+    /Title (Reliability-Targeted Bedtime Planning with Explicit Infeasibility)%
+    /Subject ()%
+    /Keywords ()%
+    /Creator ()%
+  }
+\fi
+
 % Tighter floats; the page budget is the binding constraint here.
 \setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
 \setlength{\floatsep}{8pt plus 2pt minus 2pt}
@@ -831,8 +843,11 @@ splits are disjoint, that outcome columns cannot become predictors, and that
 habit features use strictly prior nights. Datasets are not redistributed; both
 are obtainable without application from the sources in
 Table~\ref{tab:data}. Code and reproduction instructions are available at an
-anonymised URL for review.\footnote{Anonymised artifact link to be inserted
-before submission.}
+anonymised URL for review.\footnote{%%
+%% >>> REPLACE BEFORE SUBMITTING <<<  The CFP requires repositories revealing
+%% authorship to be blinded. Mirror the repo to anonymous.4open.science and put
+%% that URL here. Do NOT paste the GitHub link.
+\texttt{[anonymised artifact URL]}}
 
 %% ===============================================================
 \begin{thebibliography}{9}
