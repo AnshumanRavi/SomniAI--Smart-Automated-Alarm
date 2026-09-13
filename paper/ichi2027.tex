@@ -59,15 +59,19 @@
 \newif\ifanon
 \anontrue                        % <<< \anonfalse for camera-ready / arXiv
 
+%% The real author block deliberately does NOT live in this file. It is in
+%% paper/authors.local.tex, which is gitignored, so no name, e-mail or
+%% affiliation exists anywhere in the repository -- and therefore not in the
+%% anonymised artifact mirror a reviewer browses. Keep it that way.
 \ifanon
   \author{\IEEEauthorblockN{Anonymous Authors}
   \IEEEauthorblockA{Affiliation withheld for double-blind review}}
 \else
-  \author{\IEEEauthorblockN{Ayushi Shukla and Anshuman Ravi}
-  \IEEEauthorblockA{Dept.\ of Computer Science and Engineering\\
-  National Institute of Technology Patna\\
-  Patna, Bihar, India\\
-  \texttt{\{ayushis.ug23.cs, anshumanr.ug23.cs\}@nitp.ac.in}}}
+  \IfFileExists{authors.local.tex}{\input{authors.local.tex}}{%
+    \PackageError{ichi2027}{authors.local.tex is missing}{%
+      Camera-ready needs paper/authors.local.tex (gitignored, so it is not in
+      a fresh clone). Recreate it with the \string\author{} block, or set
+      \string\anontrue to build the anonymous version.}}
 \fi
 
 \maketitle
