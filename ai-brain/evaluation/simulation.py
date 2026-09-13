@@ -73,14 +73,15 @@ def _current(features: dict, name: str) -> float:
     return float(features.get(name, FEATURE_DEFAULTS[name]))
 
 
-def lever_values(features: dict, name: str, max_steps: int = MAX_STEPS) -> list[float]:
+def lever_values(features: dict, name: str, max_steps: int = MAX_STEPS,
+                 levers: list | None = None) -> list[float]:
     """Every value a lever can take, at 0..MAX_STEPS of movement.
 
     Mirrors `wake_plan`'s own candidate rule exactly. If these diverged, the
     "ground truth" would be over a set the planner cannot reach and every
     comparison below would be meaningless.
     """
-    for lname, direction, lo, hi, step, _label in wake_plan.CONTROLLABLE:
+    for lname, direction, lo, hi, step, _label in (levers or wake_plan.CONTROLLABLE):
         if lname != name:
             continue
         cur = _current(features, name)
@@ -114,15 +115,16 @@ def true_latest_bedtime(model: Model, features: dict, target: float) -> float | 
 
 
 def true_reachability(model: Model, features: dict, target: float,
-                      max_steps: int = MAX_STEPS) -> dict:
+                      max_steps: int = MAX_STEPS, levers: list | None = None) -> dict:
     """Exhaustive search of the whole reachable set.
 
     Returns whether the target is attainable at all, the best reliability
     available, and the fewest distinct levers needed to attain it. This is the
     answer the planner is graded against.
     """
-    others = [name for name, *_ in wake_plan.CONTROLLABLE if name != "bedtime_hour"]
-    option_lists = [lever_values(features, name, max_steps) for name in others]
+    levers = levers or wake_plan.CONTROLLABLE
+    others = [name for name, *_ in levers if name != "bedtime_hour"]
+    option_lists = [lever_values(features, name, max_steps, levers) for name in others]
     baselines = {name: _current(features, name) for name in others}
 
     best_rel = 0.0
@@ -159,14 +161,15 @@ def true_reachability(model: Model, features: dict, target: float,
 
 
 def grade(model: Model, features: dict, target: float,
-          check_minimality: bool = True, max_steps: int = MAX_STEPS) -> dict:
+          check_minimality: bool = True, max_steps: int = MAX_STEPS,
+          levers: list | None = None) -> dict:
     """Compare the planner's output against exhaustive ground truth."""
     with planner_using_fn(model):
         plan = wake_plan.plan_wake({"features": dict(features),
                                     "requiredReliability": target})
 
     truth_bedtime = true_latest_bedtime(model, features, target)
-    truth = (true_reachability(model, features, target, max_steps=max_steps)
+    truth = (true_reachability(model, features, target, max_steps=max_steps, levers=levers)
              if check_minimality else {"feasible": None, "minimal_levers": None})
 
     planned_bedtime = plan["recommendedBedtimeHour"]
@@ -207,7 +210,8 @@ def grade(model: Model, features: dict, target: float,
 def study(scenarios: dict[str, tuple[Model, dict]],
           targets: tuple[float, ...] = (0.5, 0.6, 0.7, 0.8, 0.9, 0.95),
           check_minimality: bool = True,
-          max_steps: int = MAX_STEPS) -> pd.DataFrame:
+          max_steps: int = MAX_STEPS,
+          levers: list | None = None) -> pd.DataFrame:
     """Grade every (scenario, target) pair."""
     rows = []
     for name, (model, features) in scenarios.items():
@@ -215,5 +219,5 @@ def study(scenarios: dict[str, tuple[Model, dict]],
             rows.append({"scenario": name,
                          **grade(model, features, target,
                                  check_minimality=check_minimality,
-                                 max_steps=max_steps)})
+                                 max_steps=max_steps, levers=levers)})
     return pd.DataFrame(rows)
