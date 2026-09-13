@@ -403,21 +403,11 @@ the point; **calibration and refusal quality are.**
   directory:** all four checked values reproduce exactly — sweep optimality
   1.000, verdict accuracy 0.929, broken promises 0, false refusals 3.
 
-- [ ] **16. Hostile review**  ← **you are here**
-
-  ```
-  Assemble the reproducibility package: pinned environment, fixed seeds, dataset access instructions, and a single command that regenerates every number in the paper.
-  ```
-
-  **Verify:** Fresh clone, follow your own instructions, reproduce every
-  reported figure. Do this on a clean machine — "works on mine" is how this step
-  fails.
-
 ---
 
 ## Phase 5 — Submit
 
-- [ ] **16. Hostile review**
+- [ ] **16. Hostile review**  ← **you are here**
 
   ```
   Review the full manuscript as a hostile reviewer would, and list every rejection reason you can find.
