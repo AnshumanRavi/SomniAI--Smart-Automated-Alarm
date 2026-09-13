@@ -3,8 +3,9 @@
 Read as a reviewer looking for reasons to reject, not reasons to accept. Ordered
 by how much damage each objection does.
 
-Status after the pass: **4 fixed in the paper, 5 answered, 2 accepted as real
-and unresolvable without a deployment study.**
+Status after the pass: **5 fixed in the paper, 4 answered, 2 accepted as real
+and unresolvable without a deployment study.** R9 was open when this document
+was written and was closed when §2 was drafted.
 
 ---
 
@@ -132,7 +133,9 @@ redundant, interacting), not to flatter it.
 **The attack.** Model inversion with counterfactual attribution is Wachter et
 al. and DiCE. What is new beyond the application domain?
 
-**Status: OPEN — for §2, not yet drafted.** The delta to argue: those methods
+**Status: FIXED.** §2.1 now argues the delta against Wachter et al. [1], Ustun et
+al. [2] and DiCE [3] explicitly, and §2.2–2.3 position the work against smart
+alarms and the forward sleep-prediction literature. The argument as written: those methods
 explain a *decision already made* by finding minimal changes that flip it. This
 inverts against a *required probability*, partitions the search space by what is
 actionable within the planning horizon, and treats infeasibility as a
@@ -167,5 +170,5 @@ limitation. It is the honest boundary of what retrospective data can support.
 | R4 | "Latest" unjustified | §3.1 reframed with its trade-off |
 | R5 | PMData framed generously | §4.1 says "fails to replicate" |
 | R6–R8 | Goalposts, ICC, scenarios | Already answered; wording tightened |
-| R9 | Novelty | Flagged for §2 related work |
+| R9 | Novelty | §2.1 written, delta argued with citations |
 | R10–R11 | Weak models, no deployment | Accepted, stated in §5 |

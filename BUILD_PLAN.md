@@ -429,6 +429,31 @@ the point; **calibration and refusal quality are.**
   against the counterfactual-explanation literature needs arguing with citations
   when related work is written.
 
+- [x] **16b. The sections the plan forgot** — *done. Abstract, §1 Introduction,
+  §2 Related Work, §6 Conclusion and eight verified references added; draft is
+  3,864 → 5,612 words.*
+
+  **This step did not exist until step 16 was finished.** Step 14 asked for
+  "Methods, Results and Limitations" and every later step verified what step 14
+  produced, so nothing ever checked that a paper needs an abstract. The plan's
+  checkboxes were all green over a draft missing its first two sections and its
+  last one. Worth recording as a failure mode: a plan verifies what it names,
+  and is silent about what it forgot to name.
+
+  §2 closes objection R9, the last open item from the hostile review. The
+  novelty delta is argued in three parts against Ustun et al.'s actionable
+  recourse: the constraint is a required probability rather than a decision
+  boundary, the partition is temporal rather than binary (sleep's most
+  informative levers are changeable — over weeks, not tonight), and
+  infeasibility is an output with attribution rather than a failed search.
+
+  All eight references were checked against the publisher record rather than
+  written from memory; the audit is in [`paper/references.md`](paper/references.md).
+  Two findings from that check made the paper better: the smart-alarm
+  intervention we cite [4] found *little overall effect* on sleep inertia, which
+  supports targeting the night before rather than the moment of waking, and [5]
+  carries a published correction that a careless cite would have missed.
+
 - [ ] **17. Preprint and submission**  ← **you are here**
 
   ```

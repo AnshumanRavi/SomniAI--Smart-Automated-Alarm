@@ -1,8 +1,143 @@
 # Reliability-Targeted Bedtime Planning with Explicit Infeasibility
 
-*Draft — Methods, Results, Limitations. Markdown for now; converts to IEEEtran
-at submission. Every number traces to a table in `docs/` and regenerates via
-`python evaluation/run_study.py`.*
+*Full draft. Markdown for now; converts to IEEEtran at submission. Every number
+traces to a table in `docs/` and regenerates via `python evaluation/run_study.py`.*
+
+---
+
+## Abstract
+
+Sleep applications forecast: given tonight's behaviour they predict an outcome.
+A person with a fixed obligation the next morning has the inverse question,
+which is a constraint rather than a prediction — *what must I do tonight to be
+up at 05:40?* — and existing systems answer it regardless of whether their model
+supports an answer. We invert a trained sleep model against a required
+reliability, partitioning inputs by what a person can change within the planning
+horizon, and return an explicit infeasibility verdict with counterfactual
+attribution when no admissible plan reaches the target. Validated against
+exhaustive search over seven ground-truth models, the planner never promises an
+unreachable target, returns the latest feasible bedtime in every case, and
+selects a minimal set of changes; its failure mode is conservatism. On two
+public wearable cohorts (85 participants, 5,432 person-nights) the underlying
+models are weak: R² 0.186 for sleep duration on the larger cohort and −0.090 on
+the smaller, where it fails to replicate, and AUC 0.660 for wake-time regularity,
+which does replicate. What the models do have is calibration (ECE 0.0148), which
+is what a refusal mechanism actually needs. We also find that a
+physiologically-structured synthetic panel overstates predictability by roughly
+fourfold in R², which we report because training sleep models on simulated data
+is common. Weak models motivate rather than undermine the contribution: a
+planner built on a signal this thin should decline to promise, and we show which
+component makes that possible.
+
+## 1. Introduction
+
+Alarm and sleep applications are forecasters. Given a night's behaviour they
+report a predicted duration, a sleep score, or a probability of waking well. The
+user is left to interpret a number and infer a remedy.
+
+A person with a hard obligation has a different question, and it is a constraint:
+
+> *I must be up at 05:40 and I cannot miss it. What do I have to do tonight?*
+
+Forward prediction cannot answer this. Worse, it cannot decline to answer: a
+system that reports a probability reports one whether or not its model supports
+the inference, and a user who must not oversleep is exactly the user least well
+served by unwarranted confidence.
+
+We make three contributions.
+
+**A planning formulation.** We treat a trained sleep-outcome model as a
+constraint to solve against rather than a predictor to read, searching for the
+latest bedtime meeting a required reliability. The objective is the least
+behavioural cost satisfying the constraint, not the safest available plan.
+
+**A partition by planning horizon.** Inputs divide into what a person can change
+*tonight*, what reflects accumulated habit and takes weeks, and what is fixed.
+This is what makes a plan actionable, and — as our ablation shows — it is also
+what keeps the planner from promising things nobody can do before bed.
+
+**Infeasibility as a first-class output.** When no admissible plan reaches the
+target, the system says so, reports the achievable ceiling, and attributes the
+shortfall to the specific habit responsible. We argue this matters most exactly
+when models are weak, and we show on real data that models in this domain are
+weak.
+
+Section 2 positions the work against counterfactual explanation and algorithmic
+recourse, where the technical machinery is closest. Section 3 specifies the
+method. Section 4 reports results from simulation and two public cohorts.
+Sections 5 and 6 state what the evidence does not support.
+
+## 2. Related work
+
+### 2.1 Counterfactual explanation and algorithmic recourse
+
+The closest technical neighbours are counterfactual explanation [1] and
+algorithmic recourse [2, 3]. Wachter et al. [1] generate the minimal change to
+an input that would flip a model's decision; DiCE [3] extends this to diverse
+sets of such changes. Ustun et al. [2] are nearest of all: they explicitly
+separate *actionable* inputs from *immutable* ones and search only over the
+former, on the grounds that recourse offered over age or marital status is no
+recourse at all.
+
+We differ in three ways, and the third is the one we claim as novel.
+
+**The constraint is a probability, not a label.** Recourse asks what flips a
+decision already made about a person — loan denied, parole refused. We ask what
+achieves a *stated probability* of a future outcome the person chose themselves.
+The search target is a continuous threshold on *f*, not a decision boundary, and
+the objective is the least costly point satisfying it rather than the nearest
+point across it.
+
+**The partition is temporal, not binary.** Recourse divides inputs into
+actionable and immutable. Sleep admits a third class that neither label fits:
+sleep-timing consistency and habitual alarm response are entirely changeable —
+over weeks. They are not immutable, but they are unavailable *tonight*. Treating
+them as actionable produces advice nobody can execute before bed; treating them
+as immutable discards the most informative explanation available when a target
+cannot be met. We therefore partition by planning horizon rather than by
+mutability, and Section 4.5 shows this is the only component whose removal
+causes the planner to promise what cannot be delivered.
+
+**Infeasibility is an output, not a failure.** When no recourse exists, recourse
+methods report that none was found. We treat that case as the primary result:
+the system reports the achievable ceiling and attributes the shortfall by
+counterfactual substitution over the habit partition, converting "no plan
+exists" into "the limit is not tonight, it is this habit, worth this much." For
+a user who must not oversleep, that is more actionable than a plan would be.
+
+### 2.2 Sleep prediction and smart alarms
+
+Smart alarms optimise *when to ring within a window*, typically by detecting a
+light sleep stage from movement or ambient sensing and triggering inside it [4].
+This is a different problem from ours: the window is given and the system chooses
+a moment within it, whereas we take the wake time as fixed and solve for the
+behaviour preceding it. It is also a problem whose benefit is not settled —
+Campanella et al. [4] find little overall effect of such a system on sleep
+inertia — which is part of why we target the night before rather than the
+moment of waking.
+
+Bedtime-reminder features in consumer platforms count back a fixed duration from
+a target wake time, as do "sleep cycle calculators" that subtract multiples of
+90 minutes. These are model-free rules; they cannot represent an individual's
+response and, as Section 4.4 shows, they have no mechanism for recognising that
+a target is unreachable.
+
+A substantial literature predicts sleep outcomes from wearable data, from deep
+models of sleep quality [5] to next-night sleep duration in clinical populations
+[6]. All of it runs forward: behaviour in, outcome out. Our contribution is not
+a better predictor — ours is weak, and we report it as such — but a way of using
+a predictor that stays honest when it is weak.
+
+### 2.3 Wearable sleep datasets
+
+We evaluate on LifeSnaps [7] and PMData [8], both public and both requiring no
+application. Neither records alarm interaction, which is the central data
+limitation of this work: habitual snooze count and alarm response latency are
+absent from every public wearable corpus we are aware of, because no consumer
+device instruments the alarm itself.
+
+Work on sleep-outcome prediction frequently trains on simulated panels when real
+cohorts are unavailable. Section 4.1 quantifies what that costs on this task.
 
 ---
 
@@ -478,6 +613,76 @@ analysis is possible.
 
 **Sleep staging is consumer-grade.** Fitbit's sleep classification is not
 polysomnography, and its error is not independent of the behaviours we model.
+
+---
+
+## 6. Conclusion
+
+We treated a sleep model as a constraint rather than a forecast, and asked what a
+person must do tonight to reach a wake time at a reliability they choose. Three
+things follow from that change of question. Inputs must be partitioned by what is
+changeable within the planning horizon, and that partition is not the
+actionable/immutable split used in algorithmic recourse — sleep's most
+informative levers are changeable over weeks and unavailable tonight. The search
+must be validated against something, and since no observational cohort contains
+the counterfactual, we validated against exhaustive search over ground-truth
+models built to defeat it: the planner never promised a target it could not
+reach, returned the latest feasible bedtime in every case, and erred only by
+refusing three times when a plan existed. And infeasibility must be reported
+rather than suppressed, because the underlying models are weak — R² 0.186 and
+AUC 0.660 on real cohorts, against the fourfold-inflated R² a synthetic panel
+reports for the same task.
+
+The weakness is the argument, not an embarrassment beside it. A planner with this
+much signal should decline to promise, and our ablation identifies the horizon
+partition as the single component whose removal makes it promise what cannot be
+delivered. What we have not shown is that following the advice improves waking;
+that requires giving people the recommendation and measuring what happens, and
+our matched-subset analysis is only large enough to size that study at 50–75
+participants. The method is ready for it. The claim is not yet earned.
+
+---
+
+## References
+
+[1] S. Wachter, B. Mittelstadt, and C. Russell, "Counterfactual explanations
+without opening the black box: automated decisions and the GDPR," *Harvard
+Journal of Law & Technology*, vol. 31, no. 2, pp. 841–887, 2018.
+
+[2] B. Ustun, A. Spangher, and Y. Liu, "Actionable recourse in linear
+classification," in *Proc. Conf. on Fairness, Accountability, and Transparency
+(FAT\*)*, 2019, pp. 10–19, doi: 10.1145/3287560.3287566.
+
+[3] R. K. Mothilal, A. Sharma, and C. Tan, "Explaining machine learning
+classifiers through diverse counterfactual explanations," in *Proc. Conf. on
+Fairness, Accountability, and Transparency (FAT\*)*, 2020, pp. 607–617, doi:
+10.1145/3351095.3372850.
+
+[4] C. Campanella, K. Byun, A. Senerat, L. Li, R. Zhang, S. Aristizabal, P.
+Porter, and B. Bauer, "The efficacy of a multimodal bedroom-based 'smart' alarm
+system on mitigating the effects of sleep inertia," *Clocks & Sleep*, vol. 6,
+no. 1, pp. 183–199, 2024, doi: 10.3390/clockssleep6010013.
+
+[5] A. Sathyanarayana, S. Joty, L. Fernandez-Luque, F. Ofli, J. Srivastava, A.
+Elmagarmid, T. Arora, and S. Taheri, "Sleep quality prediction from wearable
+data using deep learning," *JMIR mHealth and uHealth*, vol. 4, no. 4, art. e125,
+2016, doi: 10.2196/mhealth.6562.
+
+[6] A. Fellger, G. Sprint, D. Weeks, E. Crooks, and D. J. Cook, "Wearable
+device-independent next day activity and next night sleep prediction for
+rehabilitation populations," *IEEE Journal of Translational Engineering in
+Health and Medicine*, vol. 8, art. 2700509, 2020, doi:
+10.1109/JTEHM.2020.3014564.
+
+[7] S. Yfantidou, C. Karagianni, S. Efstathiou, A. Vakali, J. Palotti, D. P.
+Giakatos, T. Marchioro, A. Kazlouski, E. Ferrari, and Š. Girdzijauskas,
+"LifeSnaps, a 4-month multi-modal dataset capturing unobtrusive snapshots of our
+lives in the wild," *Scientific Data*, vol. 9, art. 663, 2022, doi:
+10.1038/s41597-022-01764-x.
+
+[8] V. Thambawita, S. A. Hicks, H. Borgli, H. K. Stensland, D. Jha, et al.,
+"PMData: a sports logging dataset," in *Proc. 11th ACM Multimedia Systems Conf.
+(MMSys)*, 2020, pp. 231–236, doi: 10.1145/3339825.3394926.
 
 ---
 
