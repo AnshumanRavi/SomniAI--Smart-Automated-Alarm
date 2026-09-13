@@ -9,6 +9,11 @@ would care about fails, so it is usable in CI rather than only by eye.
 Without SOMNIAI_DATA_DIR the real-data sections are skipped and the simulation
 half still runs end to end - the algorithm validation, the ablations and the
 budget sensitivity need no downloads at all.
+
+On Windows, clone to a short path such as C:/somniai. numpy ships test fixtures
+nested deeply enough that a long clone path pushes the install past the 260
+character MAX_PATH limit, and pip fails partway through with a misleading
+"No module named numpy._utils" on the next import.
 """
 
 from __future__ import annotations

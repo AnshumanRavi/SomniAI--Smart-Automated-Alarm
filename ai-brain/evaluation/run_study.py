@@ -186,7 +186,15 @@ def main() -> None:
     ablation_tables(args.out)
     if not args.skip_real:
         real_data_tables(args.out)
-    print(f"\ndone -> {os.path.abspath(args.out)}")
+    print("\n[figures] regenerating paper figures")
+    from evaluation import ablation as _abl
+    from evaluation import figures as _figs
+    print("  " + _figs.fig_inverse_search(args.figures))
+    print("  " + _figs.fig_synthetic_vs_real(args.figures))
+    print("  " + _figs.fig_ablation(args.figures, _abl.study()))
+
+    print(f"\ndone -> {os.path.abspath(args.out)}"
+          f" and {os.path.abspath(args.figures)}")
 
 
 if __name__ == "__main__":
