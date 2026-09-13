@@ -41,6 +41,15 @@ python reproduce.py
 `fetch_datasets.py` resumes interrupted downloads, verifies both sizes and
 archive integrity, and prints the citation each dataset requires.
 
+**If LifeSnaps fails with `HTTP Error 504: Gateway Time-out`, that is Zenodo,
+not you.** The whole record page returns 504 during an outage, not just the
+file, so there is nothing to fix locally — wait and retry. Observed on
+2026-09-13 across three attempts. PMData is hosted separately at
+`datasets.simula.no` and is unaffected, so the simulation results and anything
+PMData-only still run. If the outage persists, the archive can be fetched by
+hand from <https://zenodo.org/records/7229547> (`rais_anonymized.zip`, 615 MB)
+and dropped into `data/external/` under that name.
+
 | Dataset | Source | Licence | Cite |
 | --- | --- | --- | --- |
 | LifeSnaps | Zenodo record 7229547 | CC BY 4.0 | Yfantidou et al., *Scientific Data* 9:663, 2022 |
