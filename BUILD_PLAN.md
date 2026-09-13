@@ -379,7 +379,31 @@ the point; **calibration and refusal quality are.**
   but as a limitation of *this* work, since the planner's thresholds were tuned
   against a simulation now known to be optimistic.
 
-- [ ] **15. Reproducibility package**  ← **you are here**
+- [x] **15. Reproducibility package** — *done. Instructions in
+  [`REPRODUCE.md`](REPRODUCE.md).*
+
+  `ai-brain/reproduce.py` is the single command: checks the environment, runs
+  the suite, regenerates every table and figure, and compares against the values
+  the paper quotes — exiting non-zero on a mismatch, so it works in CI rather
+  than only by eye. Plus `requirements-lock.txt` (exact pins),
+  `fetch_datasets.py` (resumable, integrity-checked, prints citations).
+
+  **The clean-machine test earned its place twice.** It first showed none of
+  steps 11b–15 was committed, so a fresh clone had nothing to run. With that
+  fixed, it showed `run_study.py` accepted `--figures` but never generated any —
+  an earlier edit had silently failed and `reproduce.py` reported success anyway
+  because it only checked tables. Both now fixed and verified end to end.
+
+  It also surfaced a Windows gotcha worth recording: numpy's nested test
+  fixtures push a long clone path past the 260-character `MAX_PATH` limit, and
+  pip fails partway through leaving a misleading `No module named
+  'numpy._utils'`. Clone to a short path.
+
+  **Verified from a fresh clone, fresh virtualenv, pinned versions, no data
+  directory:** all four checked values reproduce exactly — sweep optimality
+  1.000, verdict accuracy 0.929, broken promises 0, false refusals 3.
+
+- [ ] **16. Hostile review**  ← **you are here**
 
   ```
   Assemble the reproducibility package: pinned environment, fixed seeds, dataset access instructions, and a single command that regenerates every number in the paper.
