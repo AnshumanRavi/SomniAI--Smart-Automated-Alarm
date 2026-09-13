@@ -407,16 +407,29 @@ the point; **calibration and refusal quality are.**
 
 ## Phase 5 — Submit
 
-- [ ] **16. Hostile review**  ← **you are here**
+- [x] **16. Hostile review** — *done. Eleven objections in
+  [`docs/hostile-review.md`](docs/hostile-review.md); four fixed in the draft.*
 
-  ```
-  Review the full manuscript as a hostile reviewer would, and list every rejection reason you can find.
-  ```
+  **The strongest objection was one the paper could not answer.** §4.2 headlined
+  that the stated reliability is well calibrated; §5 conceded the target has no
+  association with how participants felt. Together, the central positive result
+  was calibration against a label the paper admits measures nothing anyone cares
+  about. §4.2 now separates internal consistency from external validity and says
+  which one it is claiming.
 
-  **Verify:** Every objection either fixed or answered in the paper. The proxy
-  label and the synthetic-data history will be the first two attacked.
+  Also fixed: the refusal baselines could not refuse (strawman), the comparison
+  that goes against us was missing from the paper while present in the docs
+  (forward prediction beats the inverse planner — now reported and not counted
+  in our favour), "latest feasible" was asserted rather than justified (it is
+  the bedtime with zero margin), and PMData was called a replication while its
+  duration model scored R² −0.090 (now: a failed replication).
 
-- [ ] **17. Preprint and submission**
+  Three objections accepted as real: weak models, no deployment study, and
+  author-designed simulation scenarios. One left open for §2 — the novelty delta
+  against the counterfactual-explanation literature needs arguing with citations
+  when related work is written.
+
+- [ ] **17. Preprint and submission**  ← **you are here**
 
   ```
   Prepare the arXiv preprint, the submission package, and the cover letter for the target venue.
