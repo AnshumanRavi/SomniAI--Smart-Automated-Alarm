@@ -534,6 +534,16 @@ whose removal breaks soundness** — without it the planner offers plans requiri
 changes nobody can make before bed. The attribution changes no verdict at all;
 what it changes is whether the user is told why (2 habit causes named versus 0).
 
+**This result is the paper's strongest claim and its least externally grounded,
+and the two facts are connected.** The partition is what the ablation identifies
+as load-bearing, yet it is exercised here only in simulation, and two of its four
+inputs — habitual snooze count and alarm response latency — exist in no public
+wearable dataset (Section 3.6), so no observational analysis in this paper can
+test it. The component we claim matters most is therefore demonstrated entirely
+within a world we specified. We take the simulation as evidence that the
+mechanism works as designed, not as evidence that it is calibrated to human
+sleep; only instrumented alarm data can supply the latter.
+
 ### 4.6 Observational evidence is directionally positive but inconclusive
 
 Nights where a participant coincidentally slept near the recommended hour,
