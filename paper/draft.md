@@ -24,10 +24,20 @@ reports *f*(**x**). We instead solve, for a required reliability *τ*:
 > and if none exists, report that fact together with the achievable ceiling and
 > its cause.
 
-*Latest*, not earliest, is deliberate: among bedtimes satisfying the constraint,
-the latest imposes the least behavioural cost. A planner returning the safest
-bedtime rather than the latest feasible one is needlessly punitive and will be
-ignored.
+*Latest*, not earliest, is a design choice with a trade-off rather than an
+obvious optimum. Among bedtimes satisfying the constraint, the latest imposes
+the least behavioural cost, and a planner that always recommends the safest
+available bedtime is needlessly punitive and will be ignored. But the latest
+feasible bedtime is by construction the one with **no margin**: it sits exactly
+at the constraint boundary, so any error in *f* translates directly into a
+missed wake. With the model accuracies reported in Section 4.1, that error is
+not small.
+
+The objective is therefore exposed as a parameter — a deployment can require
+*f* ≥ *τ* + *m* for a margin *m* — and we make no claim that *m* = 0 is
+correct for users. Which margin people actually want, and whether they trust a
+system that cuts it fine, is a question for the deployment study of Section 5
+rather than one this paper answers.
 
 ### 3.2 Feature partition
 
@@ -254,15 +264,21 @@ Retrained on real cohorts with identical model, features and protocol:
 | LifeSnaps | 1.016 | **+0.186** (95% CI 0.075–0.297) | +15.0% |
 | PMData | 1.072 | **−0.090** | +3% |
 
-R² falls by roughly a factor of four. On the 16-participant replication cohort
-the model is worse than predicting the mean. Across splits R² ranges −0.077 to
-+0.395, so no single-split figure is reportable; the interval nonetheless
-excludes zero, so the model does beat the mean on LifeSnaps.
+R² falls by roughly a factor of four. Across splits it ranges −0.077 to +0.395,
+so no single-split figure is reportable; the interval nonetheless excludes zero,
+so the model does beat the mean on LifeSnaps.
 
-For wake-time regularity the gap is smaller but present: AUC 0.761 synthetic
-against 0.660 (95% CI 0.610–0.710) on LifeSnaps and 0.675 on PMData. The
-interval excludes chance. Unweighted accuracy exceeds the majority-class
-baseline by only 1.0 point.
+**On PMData the duration model does not replicate.** R² −0.090 is worse than
+predicting the mean, and we state that as a failed replication rather than as a
+smaller effect. The cohort is 16 participants and the interval is correspondingly
+wide, but the result is what it is, and a reader should treat the duration model
+as supported by one cohort rather than two.
+
+The regularity model does replicate: AUC 0.761 synthetic against 0.660
+(95% CI 0.610–0.710) on LifeSnaps and 0.675 on PMData — marginally *higher* on
+the second cohort. Both intervals exclude chance. Unweighted accuracy exceeds
+the majority-class baseline by only 1.0 point, so the discrimination is real but
+slight.
 
 An oracle predicting each held-out participant's own mean duration beats the
 model in 5 of 8 splits. Consistent with this, the unconditional intraclass
@@ -297,6 +313,22 @@ description is **well calibrated, weakly informative**, which is the combination
 honest refusal requires: the model does not know much, but it knows how much it
 knows.
 
+**What this result does and does not claim.** Calibration is measured against
+the constructed target of Section 3.7, and Section 5 reports that this target
+has no detectable association with how participants said they felt. The two
+statements are compatible, and the distinction matters enough to make explicit:
+this is a claim about **internal consistency**, not about external validity.
+When the system states 85%, roughly 85% of those nights satisfy the stated
+criterion.
+
+That is precisely the property a refusal mechanism requires, because refusal is
+a statement about the model's own confidence rather than about the world: a
+system declining to promise 95% is asserting that its own estimate does not
+reach 95%, and that assertion is only meaningful if its estimates mean what they
+say. It is *not* a claim that waking within 30 minutes of one's habitual time is
+a valuable outcome. Establishing that the criterion is worth caring about
+requires the deployment study this paper does not have.
+
 ### 4.3 The algorithm is sound but incomplete
 
 The recommendation cannot be validated observationally — it is conditional on a
@@ -318,19 +350,37 @@ contribution is honest refusal is the correct direction to err. Behaviour at the
 achievable ceiling is exact: a target equal to the ceiling is promised, one
 0.001 above is refused.
 
-### 4.4 Refusal beats always-promising
+### 4.4 Refusal beats promising, and forward prediction refuses best
 
 Over-promise rate — promising a target the held-out participant's own achieved
 rate could not deliver:
 
-| Target | Always promise | 90-min cycle rule | Inverse planner |
-| --- | --- | --- | --- |
-| 0.90 | 0.867 | 0.867 | **0.068** |
-| 0.95 | 1.000 | 1.000 | **0.040** |
+| Target | Always promise | 90-min cycle rule | Inverse planner | Forward prediction |
+| --- | --- | --- | --- | --- |
+| 0.70 | 0.376 | 0.376 | 0.372 | **0.294** |
+| 0.80 | 0.614 | 0.614 | 0.473 | **0.261** |
+| 0.90 | 0.867 | 0.867 | 0.068 | **0.016** |
+| 0.95 | 1.000 | 1.000 | 0.040 | **0.013** |
 
 At a 0.95 target the model-free planners promise every night and are wrong every
-time. A cycle calculator has no mechanism for knowing it cannot deliver, so it
-never says so.
+time. That comparison is real but weak: neither has any mechanism for declining,
+so measuring their over-promise rate largely measures that absence. We report it
+because it is the behaviour deployed systems actually exhibit, not because it is
+a demanding baseline.
+
+**The informative comparison is forward prediction**, which uses the same model
+and differs only in that it does not search — and it beats the inverse planner
+at every target. We report this rather than omitting it, and we do not count it
+in our favour, but it should not be read as evidence that inversion hurts. The
+two make different kinds of promise. Forward prediction claims *tonight, as it
+already stands, clears the target*, and the observed night tests that claim
+directly. Inversion claims *a different bedtime would clear it*, and no
+participant adopted a different bedtime on our instruction. The observed outcome
+therefore tests a night the recommendation was not about.
+
+This is the counterfactual gap of Section 4.3 appearing in the data rather than
+in the argument: the comparison is between a claim this dataset can check and
+one it cannot. Separating them requires intervention, not more observation.
 
 ### 4.5 Every component contributes differently
 
