@@ -468,21 +468,23 @@ the point; **calibration and refusal quality are.**
   `paper/figures/`, and [`paper/SUBMISSION.md`](paper/SUBMISSION.md) with the
   checklist, trim order and cover letter.
 
-  **The deadline moved under us.** ICHI 2027's Early Bird track reportedly
-  closes **21 Sep 2026 AoE**, not the early-February date extrapolated from the
-  2026 cycle. That is unconfirmed — the ICHI 2027 site is not live — and
-  confirming it is the first item on the checklist. Early Bird rejections may
-  revise and resubmit to the regular track, so submitting costs little beyond
-  the formatting work, which was needed anyway.
+  **The deadline moved under us**, and is now confirmed against the venue's own
+  CFP: ICHI 2027's Early Bird track closes **21 Sep 2026, 23:59 AoE**, notifying
+  14 Nov 2026 — not the early-February date extrapolated from the 2026 cycle.
+  Double-blind, long papers only, OpenReview, and **10 pages plus references**
+  (references are free, which is more generous than the 2026 page implied).
+  Early Bird rejections may revise and resubmit to the regular track, so
+  submitting costs little beyond the formatting work, which was needed anyway.
 
-  Three things block submission, and none is analysis:
+  Two things block submission, and neither is analysis:
 
-  1. **Confirm the deadline and the blind policy.** The 2026 cycle's own pages
-     disagree on single- versus double-blind.
-  2. **Compile it.** No LaTeX on this machine, so the source is structurally
-     validated but never built. Page count is unverified against the 10-page
-     limit and is the main risk.
-  3. **Settle authorship** with the co-author who wrote the original system.
+  1. **Compile it.** No LaTeX on this machine, so the source is structurally
+     validated but never built. Page count is unverified — though with
+     references excluded from the limit, the margin is comfortable.
+  2. **Settle authorship** with the co-author who wrote the original system.
+
+  Plus the double-blind mechanics: anonymise the artifact link, scrub the PDF
+  metadata. Both are on the checklist in `paper/SUBMISSION.md`.
 
 ---
 

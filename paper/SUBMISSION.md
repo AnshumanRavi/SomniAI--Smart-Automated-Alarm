@@ -1,49 +1,41 @@
 # Submission package
 
 Target: **IEEE ICHI 2027, Early Bird track.**
+Confirmed against the venue's own CFP on 2026-09-13.
 
-## The deadline, and what is actually confirmed
+## The rules, confirmed
 
-| Fact | Source | Confidence |
-| --- | --- | --- |
-| Early Bird deadline **21 Sep 2026, 23:59 AoE** | search results citing the ICHI announcement | **unconfirmed** |
-| Submissions via OpenReview | same | **unconfirmed** |
-| Organisers: Shi, Wu (Temple), Bian (Indiana) | same | likely |
-| ICHI 2027 website | not yet live as of 13 Sep 2026 | confirmed absent |
+Source: <https://ichi2027.github.io/ICHI2027/call-for-early-submission.html>
 
-**Everything below assumes the 21 Sep date is real, and it has not been verified
-against a primary source.** The ICHI 2027 site is not up, and the
-[@ieeeichi](https://x.com/ieeeichi) account could not be read programmatically.
-**Confirm this by hand before doing anything else** — it is a two-minute check
-that decides whether the next week is urgent or not.
+| | |
+| --- | --- |
+| **Deadline** | **21 Sep 2026, 23:59 AoE** (= 22 Sep 11:59 UTC) |
+| Notification | 14 Nov 2026 (intended) |
+| Conference | 11–14 Jun 2027, Washington, DC |
+| **Page limit** | **10 pages for the main paper, _plus_ references** |
+| Review | **Double-blind.** Anonymise the manuscript and blind any references, links, or repositories revealing authorship |
+| Format | IEEE Proceedings Format |
+| System | OpenReview — IEEE ICHI 2027 |
+| Track | **Long papers only.** No short papers in Early Bird |
+| If rejected | May revise and resubmit to the regular track |
+| AI disclosure | Not mentioned in this CFP |
+| Contact | yuzhou.chen@ucr.edu |
 
-The rules below are taken from the **ICHI 2026** cycle, which is the closest
-model available. They must be re-checked against ICHI 2027's own CFP when it
-publishes:
-
-- Long papers only in the Early Bird track.
-- **10 pages including references**; minimum 7 pages of main content excluding
-  references.
-- IEEE Proceedings format.
-- **Double-blind** in the Early Bird track. Note the ICHI 2026 main CFP page said
-  *single*-blind — the two pages disagree, so this specifically needs checking.
-- **No supplementary materials.** Everything needed for review must be inside the
-  page limit.
-- Rejected Early Bird papers **may revise and resubmit to the regular track**.
-- Accepted papers may be recommended to the *Journal of Healthcare Informatics
-  Research*.
+**References do not count toward the 10 pages.** This is more generous than the
+ICHI 2026 page said ("10 pages including references"), and it is the rule that
+applies. The package was built to the stricter reading, so it has room rather
+than a problem.
 
 ## Why submitting to Early Bird is close to free
 
-The resubmission rule is the whole argument. If it is accepted, you are done six
-months early. If it is rejected, you get expert reviews on a paper that has
-never been read by a stranger, and you resubmit to the regular track having
-addressed them. The only real cost is the work of formatting, which has to
-happen anyway.
+The resubmission rule is the whole argument. Accepted, and you are done six
+months early with a November decision. Rejected, and you get expert reviews on a
+paper no stranger has read, then resubmit to the regular track having addressed
+them. The only real cost is the formatting work, which had to happen anyway.
 
-The one risk worth naming: a rejection is a rejection, and if the regular-track
-reviewers overlap with the Early Bird reviewers, a weak first impression can
-carry. That is an argument for submitting a clean paper, not for not submitting.
+The one risk worth naming: a rejection is a rejection, and if regular-track
+reviewers overlap with Early Bird reviewers, a weak first impression can carry.
+That argues for submitting a clean paper, not for not submitting.
 
 ## Files
 
@@ -58,8 +50,8 @@ carry. That is an argument for submitting a clean paper, not for not submitting.
 
 There is **no LaTeX toolchain on this machine**, so `ichi2027.tex` has been
 checked structurally but **never compiled**. It passes: balanced environments and
-braces, no dangling `\ref`, no undefined `\cite`, every `\includegraphics`
-target present. That is not the same as compiling.
+braces, no dangling `\ref`, no undefined `\cite`, no uncited bibitem, every
+`\includegraphics` target present. That is not the same as compiling.
 
 Easiest path: upload `paper/` to Overleaf and compile there.
 
@@ -67,57 +59,65 @@ Easiest path: upload `paper/` to Overleaf and compile there.
 pdflatex ichi2027 && pdflatex ichi2027
 ```
 
-**The page count is unverified and is the main open risk.** Estimate: ~4,240
-words of body text, 8 tables, 4 figures, 2 algorithms — likely 9–10 pages, i.e.
-right at the limit. If it overruns, trim in this order:
+**Page count is still unverified, but the risk is now small.** Estimate: ~4,250
+words of body text, 8 tables, 4 figures, 2 algorithms — roughly 9 pages of main
+content, with references excluded from the limit. If it overruns 10, trim in
+this order:
 
-1. Table~\ref{tab:calib} (calibration bins) — the ECE figure in the text carries
-   the result; the four-row table is a nicety.
+1. Table `tab:calib` (calibration bins) — the ECE figure in the text carries the
+   result; the four-row table is a nicety.
 2. The parameter table's threshold block — move to the artifact, referenced.
-3. Fig. 5 (ablation) — Table VII already reports every number in it.
+3. Fig. `fig:ablation` — Table `tab:ablation` already reports every number in it.
 4. Section III-D's derived-feature paragraph — compress to two sentences.
 
 Do **not** trim the limitations section to make space. It is load-bearing for
 this paper's argument, and cutting it is how the paper stops being honest.
 
+If it comes in comfortably under 10, consider restoring `fig3_calibration.pdf`
+(the reliability diagram) — it is the most persuasive single image in the set
+and it is currently cut.
+
 ## Before submitting
 
-- [ ] **Confirm the deadline and the blind policy** against ICHI 2027's own CFP.
 - [ ] **Compile it.** Check page count, check no figure lands on a page alone,
-      check the tables are not overfull.
-- [ ] **Authorship.** Settle the author list and order with the co-author before
-      submission, not after. He wrote the original system.
-- [ ] **Anonymise the artifact.** The repo is public under a real name, and
-      `REPRODUCE.md` names it. Under double-blind, use an anonymising proxy
-      (e.g. `anonymous.4open.science`) and put that URL in the footnote in
-      Section "Reproducibility", replacing the placeholder.
-- [ ] **Check the AI-disclosure policy.** IEEE requires disclosure of generative
-      AI use in the preparation of submissions. Find ICHI 2027's wording and
-      comply with it exactly.
-- [ ] **Scrub the PDF metadata** — LaTeX embeds the author name from the system
-      unless told otherwise. Under double-blind this deanonymises you.
+      check no table is overfull.
+- [ ] **Authorship.** Settle the author list and order with the co-author who
+      wrote the original system — before submission, not after.
+- [ ] **Anonymise the artifact.** The CFP explicitly requires blinding
+      "references, links, repositories, or other information that could reveal
+      authorship." The repo is public under a real name and `REPRODUCE.md` names
+      it. Use an anonymising proxy (e.g. `anonymous.4open.science`) and put that
+      URL in the Reproducibility footnote, replacing the placeholder.
+- [ ] **Scrub the PDF metadata.** LaTeX embeds the author name from the system
+      unless told otherwise. Under double-blind this deanonymises you silently.
+- [ ] **Check the paper for self-identifying phrasing** — "our previously
+      released app", the project name, anything that points at the repository.
+- [ ] **AI disclosure.** This CFP does not mention it, but IEEE's general
+      policy on generative-AI use in submissions still applies. Disclose in the
+      acknowledgements if required by the publication agreement.
+- [ ] **OpenReview account** set up ahead of the deadline, not on the night.
 
 ## arXiv: post it, but afterwards
 
-**Do not post the preprint before the submission goes in.** Under a double-blind
-policy a preprint carrying your names, posted days before the deadline, is
-exactly the thing anonymity rules exist to prevent. Most venues permit arXiv
-preprints, but the safe sequencing costs nothing:
+**Do not post the preprint before the submission goes in.** The track is
+double-blind and requires blinding anything that reveals authorship; a named
+preprint posted days before the deadline works against that. Most venues permit
+arXiv preprints, but the safe sequencing costs nothing:
 
-1. Submit to ICHI.
+1. Submit to ICHI (21 Sep).
 2. Then post to arXiv, with the real author block restored.
 
 Category: `cs.LG` primary, cross-list `cs.HC` and `eess.SP`. Licence: CC BY 4.0,
-which is compatible with LifeSnaps' licence and keeps the preprint reusable.
+compatible with LifeSnaps' licence and keeps the preprint reusable.
 
-The preprint version should differ from the submission in exactly two ways: real
-authors, and the real repository URL instead of the anonymised proxy.
+The preprint should differ from the submission in exactly two ways: real authors,
+and the real repository URL instead of the anonymised proxy.
 
 ## Cover letter
 
 A conference submission usually has no cover-letter field — this is for the
-optional *comments to the chairs* box, and for the JHIR journal path if the
-paper is recommended there. Trimmed to fit a text box:
+optional *comments to the chairs* box, and for the journal path if the paper is
+recommended onward. Trimmed to fit a text box:
 
 > We submit *Reliability-Targeted Bedtime Planning with Explicit Infeasibility*
 > to the ICHI 2027 Early Bird track.
