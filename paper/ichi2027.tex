@@ -524,6 +524,13 @@ used on the synthetic panel so that differences isolate the data.
 splitting rows at random lets a model identify the person rather than learn
 anything about nights. All reported figures are means over 8 grouped splits.
 
+\textbf{Complete cases only.} Nights missing any model input or the target are
+dropped rather than imputed, since the habit features need trailing history that
+the first nights of a record do not have. Table~\ref{tab:data} reports each
+cohort as released; the LifeSnaps models are fitted on the 3{,}376 nights from
+63 participants that survive this filter, which is the 63 in
+Fig.~\ref{fig:splits}.
+
 \textbf{Outcome columns are never predictors.} Sleep duration is approximately
 time-in-bed $\times$ efficiency, so time-in-bed, efficiency and wake time are
 excluded by an assertion rather than by convention. For the regularity
