@@ -240,6 +240,21 @@ immutable, and a method that labels it so loses the ability to explain a
 refusal, while a method that labels it actionable produces plans that cannot be
 executed in time.
 
+\textbf{The middle class is not peculiar to sleep.} It appears wherever an input
+is an accumulated summary of past behaviour, which is common in exactly the
+domains recourse is usually demonstrated on. In credit, an applicant can pay
+down a balance today, but length of credit history and depth of payment history
+move only over months, so advice to improve them is correct and useless when the
+decision is tomorrow. In clinical decision support, a patient can change today's
+diet and adherence, while HbA1c summarises roughly three months of glycaemic
+control and cannot be moved by the next appointment. In both cases a binary
+split mislabels the summary input, and the choice of which way to mislabel it
+determines whether the system produces unachievable advice or silently drops the
+best explanation it has. Partitioning by horizon makes the distinction explicit
+and lets the same model serve a user planning for tomorrow and a user planning
+for next quarter, by changing which partition is admissible rather than
+retraining.
+
 \subsection{Inverse search}
 
 \begin{algorithm}[t]
@@ -308,6 +323,40 @@ target and needing one further round. Raising it cut false refusals from 10 to 3
 of 42 and never once produced an unkeepable promise. Each round moves the chosen
 control by three steps of its native resolution, and a move is committed only if
 it gains at least 0.002.
+
+Table~\ref{tab:levers} gives the instantiation in full, since a search method is
+only reproducible if the admissible set is stated. Room temperature is the one
+control with no monotone direction, so its candidate is a set-point rather than
+an extreme, because both hotter and colder are worse. The out-of-horizon inputs
+are counterfactually set to sleep consistency 85/100, zero snoozes, a 5{,}000\,ms
+alarm response and zero sleep debt when attributing a refusal.
+
+\begin{table}[t]
+\caption{The admissible set and the search thresholds}
+\label{tab:levers}
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Control & Dir. & Range & Step \\
+\midrule
+\texttt{bedtime\_hour}                & $-$ & 20.0--26.0\,h & 0.25 \\
+\texttt{screen\_minutes\_before\_bed} & $-$ & 0--180\,min & 15 \\
+\texttt{caffeine\_mg}                 & $-$ & 0--400\,mg & 40 \\
+\texttt{ambient\_noise\_db}           & $-$ & 20--70\,dB & 5 \\
+\texttt{room\_temp\_c}        & set-pt. & 14--30\,\textdegree C & $\rightarrow$ 20.5 \\
+\texttt{stress\_level}                & $-$ & 0--100 & 10 \\
+\texttt{exercise\_minutes}            & $+$ & 0--120\,min & 20 \\
+\midrule
+\multicolumn{4}{l}{\emph{Thresholds}}\\
+Coordinate-ascent budget $R$      & \multicolumn{3}{c}{8 rounds} \\
+Min.\ gain to commit a move       & \multicolumn{3}{c}{0.002} \\
+Min.\ gain to report a control    & \multicolumn{3}{c}{0.001} \\
+Min.\ gain to report a cause      & \multicolumn{3}{c}{0.01} \\
+Primary-control resolution        & \multicolumn{3}{c}{0.25\,h over 20:00--02:00} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Infeasibility and attribution}
 
@@ -512,7 +561,7 @@ than about the world.
 
 Table~\ref{tab:refusal} reports over-promise rate, meaning the rate of promising
 a target the held-out participant's own achieved rate could not deliver. The
-model-free baselines have no mechanism for declining, so at a 0.95 target they
+model-free baselines have no mechanism for declining (Fig.~\ref{fig:refusal}), so at a 0.95 target they
 promise every instance and are wrong every time.
 
 \begin{table}[t]
@@ -532,6 +581,15 @@ Target & Always & Fixed & Inverse & Forward \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig4_refusal_quality.pdf}
+\caption{Over-promise rate against requested reliability. The model-free
+baselines diverge as the target rises because they have no mechanism for
+declining, while both model-based methods fall away as refusal engages.}
+\label{fig:refusal}
+\end{figure}
 
 \textbf{The informative comparison is forward prediction}, which uses the same
 model and differs only in that it does not search, and it beats our method at
