@@ -324,6 +324,17 @@ of 42 and never once produced an unkeepable promise. Each round moves the chosen
 control by three steps of its native resolution, and a move is committed only if
 it gains at least 0.002.
 
+\textbf{Cost.} The search needs $O(|B| + R|C|)$ model evaluations, where $B$ is
+the swept range of the primary control, $C$ the remaining controls and $R$ the
+ascent budget. In our instantiation that is at most $25 + 8 \times 6 = 73$
+scorings, issued as at most nine batched forward passes, since the sweep is one
+pass and each ascent round is another. The bound depends only on the size of the
+admissible set and the budget, not on the size of the training set or the
+dimension of $\mathbf{x}$, so the cost of planning does not grow as the model is
+trained on more data. This is what makes exhaustive scanning affordable where a
+gradient method would be the usual choice, and it is cheap enough to run between
+a user's request and their reply.
+
 Table~\ref{tab:levers} gives the instantiation in full, since a search method is
 only reproducible if the admissible set is stated. Room temperature is the one
 control with no monotone direction, so its candidate is a set-point rather than
