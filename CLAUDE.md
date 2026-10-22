@@ -41,7 +41,8 @@ Update this table after each prompt, in the same commit.
 
 70 TS tests pass, `tsc` clean, lint 0 errors / 11 warnings, 283 Python tests pass
 (28 skip without the LifeSnaps download, 4 slow deselected), **`next build`
-fails** (prompt 0.1 fixes it), 22 API routes with **no tests** (0.3).
+failed** on the original machine (prompt 0.1 checks and fixes it here), 22 API
+routes with **no tests** (0.3).
 
 ## Hard rules
 
@@ -52,10 +53,13 @@ fails** (prompt 0.1 fixes it), 22 API routes with **no tests** (0.3).
    gitignored `.anonymity-terms.local`. If that file is missing, ask for it and do
    not push until the check runs clean. This rule has been broken by accident
    once already.
-2. **Never commit to `research/evaluation-pipeline`, never delete it, never
-   force-push it, never make the repository private.** The paper's anonymised
-   artifact mirror (anonymous.4open.science) is built from that branch's history.
-   Breaking it breaks the link reviewers use. All development goes on `develop`.
+2. **Leave the co-author's fork alone.** The paper's anonymised artifact mirror
+   (anonymous.4open.science) is built from the `research/evaluation-pipeline`
+   branch of the *co-author's fork* of this repository, pinned to commit
+   `fe1df9d`. Never push to, delete or force-push that branch, and keep both this
+   repository and that fork **public** until the paper decision; breaking either
+   breaks the link reviewers use. Development happens in this repository on
+   `develop`, branched from `main`.
 3. **Don't touch the research pipeline or the paper**: `paper/`,
    `ai-brain/datasets/`, `ai-brain/evaluation/`, `ai-brain/training/train_real.py`,
    `BUILD_PLAN.md`, `REPRODUCE.md`, `docs/`. Only prompt 5.2 changes training, and

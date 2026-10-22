@@ -44,7 +44,7 @@ that outranks every other. Phase 2 exists to close it.
 | Typecheck (`tsc --noEmit`) | **clean** |
 | Lint | **0 errors, 11 warnings** |
 | AI Brain tests (pytest) | **283 passed**, 28 skipped (need the LifeSnaps download), 4 slow deselected |
-| Production build (`next build`) | **fails** — stray `C:\Users\1ansh\package-lock.json` confuses Next's workspace root, then a Windows `EPERM` |
+| Production build (`next build`) | **fails** on the original machine — a stray `package-lock.json` in a parent directory confuses Next's workspace root, then a Windows `EPERM` |
 | API route tests | **none** — 22 routes, zero tests |
 | End-to-end tests | **none** |
 | CI | **none** |
@@ -199,7 +199,7 @@ Nothing user-visible. Without this, every later change is a guess.
 #### 0.1 Housekeeping and a working build
 
 ```
-Create a develop branch from the current research/evaluation-pipeline branch. Fix the production build on Windows: resolve the stray C:\Users\1ansh\package-lock.json workspace-root problem (set outputFileTracingRoot rather than deleting files outside the repo without asking me), and diagnose the EPERM failure. Fix all 11 lint warnings. Migrate off the deprecated `next lint` to the ESLint CLI. Remove the stray abstract_plaintext.txt from the repo root. Then run lint, tsc, vitest and next build and report each result.
+Create a develop branch from main. Get the production build working on this machine: run next build and fix whatever stops it. On the original machine it failed because a package-lock.json in a parent directory made Next.js pick the wrong workspace root (fix with outputFileTracingRoot, never by deleting files outside the repo without asking me) and then hit an EPERM error on Windows; check whether either happens here. Fix all 11 lint warnings. Migrate off the deprecated `next lint` to the ESLint CLI. Then run lint, tsc, vitest and next build and report each result.
 ```
 
 **Gate:** `next build` succeeds; lint 0 errors 0 warnings; tsc clean; 70+ tests pass.
