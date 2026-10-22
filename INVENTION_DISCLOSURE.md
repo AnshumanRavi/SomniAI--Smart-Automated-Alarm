@@ -5,10 +5,10 @@ attorney or agent. **Not legal advice, and not a novelty opinion.**
 
 > ## ⚠ THE DISCLOSURE THIS DOCUMENT WARNED AGAINST HAS ALREADY HAPPENED
 >
-> **Verified 2026-10-22.** `github.com/AnshumanRavi/SomniAI--Smart-Automated-Alarm`
-> is a **public** repository, and this file is visible in its listing on `main`.
-> It entered history in commit `26a8a89`, authored by Ayushi Shukla on
-> **2026-08-05**, so the public disclosure date is on or about that day.
+> **Verified 2026-10-22.** The project's GitHub repository is **public**, and
+> this file is visible in its listing on `main`. It entered history in commit
+> `26a8a89` on **2026-08-05**, so the public disclosure date is on or about that
+> day.
 >
 > This document describes all three mechanisms in enabling detail. Published, it
 > is prior art against the inventors' own application. Two further disclosures

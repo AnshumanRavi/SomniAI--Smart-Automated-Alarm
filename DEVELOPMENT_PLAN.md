@@ -74,7 +74,7 @@ a flight would be worse off than with no backup at all.
 
 ### Coordination
 
-Ayushi merged PR #1 into her `main` but has built nothing from `PRODUCT_PLAN.md` —
+PR #1 was merged upstream, but nothing from `PRODUCT_PLAN.md` has been built —
 upstream has no product commits. So there is nothing to conflict with. Agree
 between you who owns which phase before starting; this plan replaces the old one.
 
@@ -468,7 +468,7 @@ Support randomising one aspect of waking per alarm — escalation pacing, or whe
 Add a study mode: enrolment by code, a versioned consent document, withdrawal at any time with data deletion, and an anonymised export for analysis. Write a short pre-registration draft describing the hypothesis, the outcome and the analysis before any data exists. Test enrolment, withdrawal and that exports contain no names or emails.
 ```
 
-**Gate:** standard. Then take it to NIT Patna's ethics committee before enrolling anyone.
+**Gate:** standard. Then take it to your institution's ethics committee before enrolling anyone.
 
 ---
 
@@ -526,7 +526,7 @@ Help me set up a 30-night dogfooding log: both of us use SomniAI as our only ala
 
 #### 8.2 Ethics and pilot
 
-Take 6.2's consent and pre-registration to NIT Patna's ethics committee. Once
+Take 6.2's consent and pre-registration to your institution's ethics committee. Once
 approved, run a pilot of 50–75 participants — the number the paper's matched
 analysis says is needed to detect the observed effect. That study is Paper 2.
 

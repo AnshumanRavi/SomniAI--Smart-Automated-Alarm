@@ -46,12 +46,10 @@ the sleep task is the testbed.
 **This is where your names go, and the only place they go.** The track is
 double-blind, so the PDF stays anonymous while the form records authorship.
 
-| Field | Value |
-| --- | --- |
-| Author 1 | Ayushi Shukla, ayushis.ug23.cs@nitp.ac.in |
-| Author 2 | Anshuman Ravi, anshumanr.ug23.cs@nitp.ac.in |
-| Affiliation (both) | Department of Computer Science and Engineering, National Institute of Technology Patna |
-| Country | India |
+The names, e-mails and affiliation are in `paper/authors.local.tex`, which is
+gitignored. They are deliberately not written here: this repository is public,
+and nothing in a tracked file may identify the authors while the paper is under
+double-blind review.
 
 Agree the author **order** before submitting. EasyChair records it, it is what
 appears in IEEE Xplore, and changing it later is awkward. Tick one author as
